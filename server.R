@@ -1,9 +1,8 @@
 library(shiny)
 
-minCalories<- function()
-{
-  
-}
+#the formulas for the calculations were obtained from
+#http://weightloss.about.com/od/eatsmart/a/blcalintake_2.htm
+
 activityBMR <- function(bmr, activity)
 {
   
@@ -21,6 +20,7 @@ BMR <- function(ht, wt,age, gender)
   heightCoef <- 4.7
   ageCoef <- 4.7
   
+  #male is 2, female is 1
   if(gender=="2")
   {
     offsetCoef=66
@@ -38,7 +38,14 @@ shinyServer(
     output$curweightValue <- renderPrint({input$curweight})
     output$genderValue <- renderPrint({input$gender})
     output$bmr <- renderPrint({BMR(input$height,input$curweight,input$age,input$gender)})
-    output$act <- renderPrint({activityBMR(BMR(input$height,input$curweight,input$age,input$gender),input$exercise)})
-    output$minCalories <- renderPrint({activityBMR(BMR(input$height,input$curweight,input$age,input$gender),input$exercise)})
+    output$act <- renderPrint({
+      activityBMR(
+            BMR(input$height,
+                input$curweight,
+                input$age,
+                input$gender
+                ),
+                  input$exercise
+                  )})
   }
 )

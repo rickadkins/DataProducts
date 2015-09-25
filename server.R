@@ -1,0 +1,44 @@
+library(shiny)
+
+minCalories<- function()
+{
+  
+}
+activityBMR <- function(bmr, activity)
+{
+  
+  if(activity=="20") bmrOffset <- .20
+  if(activity=="30") bmrOffset <- .30
+  if(activity=="40") bmrOffset <- .40
+  if(activity=="50") bmrOffset <- .50
+  if(activity=="60") bmrOffset <- .60
+  bmr + (bmr * bmrOffset)
+}
+BMR <- function(ht, wt,age, gender)
+{
+  offsetCoef <- 655
+  weightCoef <- 4.3
+  heightCoef <- 4.7
+  ageCoef <- 4.7
+  
+  if(gender=="2")
+  {
+    offsetCoef=66
+    weightCoef = 6.3
+    heightCoef = 12.9
+    ageCoef = 6.8
+  }
+  
+  offsetCoef + (weightCoef * wt) + (heightCoef * ht) - (ageCoef * age)
+}
+diabetesRisk <- function(glucose) glucose / 200
+shinyServer(
+  function(input, output) {
+    output$heightValue <- renderPrint({input$height})
+    output$curweightValue <- renderPrint({input$curweight})
+    output$genderValue <- renderPrint({input$gender})
+    output$bmr <- renderPrint({BMR(input$height,input$curweight,input$age,input$gender)})
+    output$act <- renderPrint({activityBMR(BMR(input$height,input$curweight,input$age,input$gender),input$exercise)})
+    output$minCalories <- renderPrint({activityBMR(BMR(input$height,input$curweight,input$age,input$gender),input$exercise)})
+  }
+)
